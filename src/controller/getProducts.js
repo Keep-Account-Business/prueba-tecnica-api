@@ -3,6 +3,7 @@ import { Product } from '../models/Products.js';
 
 export const getProducts = async (req, res) => {
   try {
+    const { start = 0, limit } = req.query;
     const response = await axios.get(`https://fakestoreapi.com/products`);
     const apiProducts = response.data.map((product) => {
       return {
@@ -15,9 +16,11 @@ export const getProducts = async (req, res) => {
     });
     const dbProducts = await Product.find();
     const allProducts = [...apiProducts, ...dbProducts];
+
     return res
       .status(200)  
-      .json(allProducts);
+      .json({paylaod: allProducts.slice(start, limit), totalProducts: allProducts.length});
+
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
