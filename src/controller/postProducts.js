@@ -4,6 +4,12 @@ export const postProducts = async (req, res) => {
   const { title, price, description, category, image } = req.body;
 
   try {
+    const nameExist = await Product.findOne({ title: title });
+    if (nameExist) {
+      return res
+        .status(400)
+        .json({ message: "Product already exists" });
+    }
     const newProduct = new Product({
       title,
       price,
