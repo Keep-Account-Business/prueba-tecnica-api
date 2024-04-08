@@ -3,7 +3,7 @@ import { Product } from '../models/Products.js';
 
 export const getProducts = async (req, res) => {
   try {
-    const { start = 0, limit } = req.query;
+    const { start = 0, limit = 10, page = 1 } = req.query;
     const response = await axios.get(`https://fakestoreapi.com/products`);
     const apiProducts = response.data.map((product) => {
       return {
