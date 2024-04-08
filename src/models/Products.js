@@ -3,10 +3,10 @@ const { Schema } = mongoose;
 
 const productSchema = new Schema({
   title: { type: String, required: true, unique: true}, 
-  price: Number,
-  description: String,
-  category: String,
-  image: String,
+  price: { type: Number },
+  description: { type: String },
+  category: { type: String },
+  image: { type: String },
 });
 
 const Product = mongoose.model("Product", productSchema, "products");

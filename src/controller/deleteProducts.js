@@ -16,9 +16,9 @@ export const deleteProducts = async (req, res) => {
     return res
       .status(200)
       .json({ message: "Product deleted successfully" });
-  } catch (error) {
+  } catch (err) {
     return res
       .status(500)
-      .json({ message: "Internal server error" });
+      .json({ message: err.message});
   }
 };
