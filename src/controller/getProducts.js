@@ -3,7 +3,8 @@ import { Product } from '../models/Products.js';
 
 export const getProducts = async (req, res) => {
   try {
-    const { start = 0, limit = 10, page = 1 } = req.query;
+    const { start = 0, limit = 12, page = 1, title, category } = req.query;
+
     const response = await axios.get(`https://fakestoreapi.com/products`);
     const apiProducts = response.data.map((product) => {
       return {
@@ -14,13 +15,21 @@ export const getProducts = async (req, res) => {
         image: product.image,
       }
     });
+    const filterProduct = (product, title, category) => {
+      const titleMatch = !title || product.title.toLowerCase().includes(title.toLowerCase());
+      const categoryMatch = !category || product.category === category || category === 'all';
+      return titleMatch && categoryMatch;
+    };
     const dbProducts = await Product.find();
     const allProducts = [...apiProducts, ...dbProducts];
 
+    const filteredProducts = allProducts.filter(product => filterProduct(product, title, category));
+
+    const productsSlices = filteredProducts.slice(start, limit)
     return res
       .status(200)  
-      .json({paylaod: allProducts.slice(start, limit), totalProducts: allProducts.length});
-
+      .json({payload: productsSlices, totalProducts: allProducts.length});
+    
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
